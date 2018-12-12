@@ -27,4 +27,13 @@
         android:singleLine="true"
         android:title="@string/pref_title_deviceid" />
 
+    <EditTextPreference
+        android:capitalize="words"
+        android:inputType="textCapWords"
+        android:key="userid"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_title_userid" />
+
 </PreferenceScreen>

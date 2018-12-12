@@ -60,12 +60,20 @@ class MainActivity : AppCompatActivity() {
         groups_ll.forEachChild {
             it.isEnabled = true
         }
+        val lines_ll = findViewById<LinearLayout>(R.id.lines)
+        lines_ll.forEachChild {
+            it.isEnabled = true
+        }
     }
 
     fun disableAll() {
         switch1.isEnabled = false
         val groups_ll = findViewById<LinearLayout>(R.id.groups)
         groups_ll.forEachChild {
+            it.isEnabled = false
+        }
+        val lines_ll = findViewById<LinearLayout>(R.id.lines)
+        lines_ll.forEachChild {
             it.isEnabled = false
         }
     }
@@ -86,6 +94,9 @@ class MainActivity : AppCompatActivity() {
                                     val data = JSONObject(result.get())
                                     active_groups.clear()
                                     for (group in data.getJSONArray("activeGroups")) {
+                                        active_groups.add(group.getString("id"))
+                                    }
+                                    for (group in data.getJSONArray("activePhonelines")) {
                                         active_groups.add(group.getString("id"))
                                     }
                                     switch1.isChecked = data.getBoolean("dnd")
@@ -113,7 +124,32 @@ class MainActivity : AppCompatActivity() {
                                 groups_ll.removeAllViews()
                                 val data = JSONObject(result.get())
                                 for (item in data.getJSONArray("items")) {
-                                    groups_ll.addView(switch(item))
+                                    groups_ll.addView(switch(item, "groups"))
+                                }
+                                loadLines()
+                            }
+                        }
+                    }
+                }
+    }
+
+    fun loadLines() {
+        val lines_ll = findViewById<LinearLayout>(R.id.lines)
+        "https://api.sipgate.com/v2/${defaultSharedPreferences.getString("userid", "w0")}/phonelines"
+                .httpGet()
+                .authenticate(defaultSharedPreferences.getString("username", ""), defaultSharedPreferences.getString("password", ""))
+                .responseString() { request, response, result ->
+                    when (result) {
+                        is Result.Failure -> {
+                            val ex = result.getException()
+                            toast(ex.toString())
+                        }
+                        is Result.Success -> {
+                            runOnUiThread {
+                                lines_ll.removeAllViews()
+                                val data = JSONObject(result.get())
+                                for (item in data.getJSONArray("items")) {
+                                    lines_ll.addView(switch(item, "phonelines"))
                                 }
                                 enableAll()
                             }
@@ -122,29 +158,31 @@ class MainActivity : AppCompatActivity() {
                 }
     }
 
-    fun switch(item: JSONObject): Switch {
+    fun switch(item: JSONObject, type: String): Switch {
         val newSwitch = Switch(this@MainActivity)
         val layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         layoutParams.setMargins(30, 30, 30, 30)
         newSwitch.layoutParams = layoutParams
         newSwitch.text = item.getString("alias")
-        newSwitch.tag = item.getString("id")
         newSwitch.isChecked = active_groups.contains(item.getString("id"))
-        System.out.println("Group " + item.getString("alias") + ": " + newSwitch.isChecked)
 
+        var prefix = type
+        if (prefix == "phonelines") {
+            prefix = defaultSharedPreferences.getString("userid", "w0") + "/phonelines"
+        }
         newSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             disableAll()
             if (isChecked) {
                 val data = JSONObject()
                 data.put("deviceId", defaultSharedPreferences.getString("deviceid", ""))
-                val req = "https://api.sipgate.com/v2/groups/${item.getString("id")}/devices"
+                val req = "https://api.sipgate.com/v2/${prefix}/${item.getString("id")}/devices"
                         .httpPost()
                         .body(data.toString())
                         .authenticate(defaultSharedPreferences.getString("username", ""), defaultSharedPreferences.getString("password", ""))
                 req.headers["Content-Type"] = "application/json"
                 req.responseString { request, response, result -> handleResult(result) }
             } else {
-                val req = "https://api.sipgate.com/v2/groups/${item.getString("id")}/devices/${defaultSharedPreferences.getString("deviceid", "")}"
+                val req = "https://api.sipgate.com/v2/${prefix}/${item.getString("id")}/devices/${defaultSharedPreferences.getString("deviceid", "")}"
                         .httpDelete()
                         .authenticate(defaultSharedPreferences.getString("username", ""), defaultSharedPreferences.getString("password", ""))
                 req.headers["Content-Type"] = "application/json"
