@@ -26,4 +26,5 @@ Quick-and-dirty Android app for toggling sipgate team DND status of a device. No
     - phonelines:write
 - Note down username and password
 - Find out your account-specific user ID, looks like `w23`. You might need to ask your admin.
-- Find out your phone's device ID
+- Find out your phone's device ID within Sipgate. Hard to find without devtools. Looks like `y42` for mobile devices.
+- Enter those settings in the app
