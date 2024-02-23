@@ -29,6 +29,7 @@ import android.view.MenuItem
  */
 class SettingsActivity : AppCompatPreferenceActivity() {
 
+    @Deprecated("Deprecated in Java")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setupActionBar()
@@ -44,6 +45,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
     /**
      * {@inheritDoc}
      */
+    @Deprecated("Deprecated in Java")
     override fun onIsMultiPane(): Boolean {
         return isXLargeTablet(this)
     }
@@ -51,6 +53,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
     /**
      * {@inheritDoc}
      */
+    @Deprecated("Deprecated in Java")
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     override fun onBuildHeaders(target: List<PreferenceActivity.Header>) {
         loadHeadersFromResource(R.xml.pref_headers, target)
@@ -60,6 +63,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
      * This method stops fragment injection in malicious applications.
      * Make sure to deny any unknown fragments here.
      */
+    @Deprecated("Deprecated in Java")
     override fun isValidFragment(fragmentName: String): Boolean {
         return PreferenceFragment::class.java.name == fragmentName
                 || GeneralPreferenceFragment::class.java.name == fragmentName
@@ -71,6 +75,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     class GeneralPreferenceFragment : PreferenceFragment() {
+        @Deprecated("Deprecated in Java")
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             addPreferencesFromResource(R.xml.pref_general)
@@ -84,6 +89,7 @@ class SettingsActivity : AppCompatPreferenceActivity() {
             bindPreferenceSummaryToValue(findPreference("deviceid"))
         }
 
+        @Deprecated("Deprecated in Java")
         override fun onOptionsItemSelected(item: MenuItem): Boolean {
             val id = item.itemId
             if (id == android.R.id.home) {

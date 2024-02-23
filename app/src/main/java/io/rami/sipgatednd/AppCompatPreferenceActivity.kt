@@ -3,10 +3,10 @@ package io.rami.sipgatednd
 import android.content.res.Configuration
 import android.os.Bundle
 import android.preference.PreferenceActivity
-import android.support.annotation.LayoutRes
-import android.support.v7.app.ActionBar
-import android.support.v7.app.AppCompatDelegate
-import android.support.v7.widget.Toolbar
+import androidx.annotation.LayoutRes
+import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.widget.Toolbar
 import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +17,7 @@ import android.view.ViewGroup
  */
 abstract class AppCompatPreferenceActivity : PreferenceActivity() {
 
+    @Deprecated("Deprecated in Java")
     override fun onCreate(savedInstanceState: Bundle?) {
         delegate.installViewFactory()
         delegate.onCreate(savedInstanceState)
@@ -70,11 +71,13 @@ abstract class AppCompatPreferenceActivity : PreferenceActivity() {
         delegate.onConfigurationChanged(newConfig)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onStop() {
         super.onStop()
         delegate.onStop()
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onDestroy() {
         super.onDestroy()
         delegate.onDestroy()
